@@ -65,7 +65,7 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col md:flex-row">
+        <div className="min-h-screen flex flex-col md:flex-row" style={{ backgroundColor: 'red' }}>
             {/* Left Side - Decorative */}
             <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-600 to-purple-600 p-12 text-white items-center justify-center">
                 <div className="max-w-md">
