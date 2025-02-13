@@ -16,10 +16,14 @@ export default function HabitForm({ onHabitAdded }: HabitFormProps) {
 
         setIsSubmitting(true);
         try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error('You must be logged in to create habits');
+
             const { error } = await supabase.from('habits').insert([
                 {
                     name: name.trim(),
                     description: description.trim() || null,
+                    user_id: user.id,
                 },
             ]);
 
@@ -52,7 +56,7 @@ export default function HabitForm({ onHabitAdded }: HabitFormProps) {
                         id="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-500 
+                        className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-500 text-gray-700
                         focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                         placeholder="What habit would you like to track?"
                         required
@@ -67,7 +71,7 @@ export default function HabitForm({ onHabitAdded }: HabitFormProps) {
                         id="description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-500 
+                        className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-500 text-gray-700
                         focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                         placeholder="Add some details about your habit..."
                         rows={3}

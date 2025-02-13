@@ -22,17 +22,42 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     const router = useRouter();
 
     useEffect(() => {
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session);
-            setUser(session?.user ?? null);
-            setLoading(false);
+        const checkSession = async () => {
+            try {
+                const { data: { session: currentSession } } = await supabase.auth.getSession();
+                console.log("Initial session check:", currentSession?.user?.id);
+                setSession(currentSession);
+                setUser(currentSession?.user ?? null);
 
-            if (!session) {
-                router.push('/login');
+                if (currentSession?.user) {
+                    console.log("Session found, redirecting to home");
+                    router.replace('/');
+                }
+            } catch (error) {
+                console.error('Session check error:', error);
+            } finally {
+                setLoading(false);
             }
+        };
+
+        checkSession();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+            console.log('Auth state changed:', event, newSession?.user?.id);
+            setSession(newSession);
+            setUser(newSession?.user ?? null);
+
+            if (event === 'SIGNED_IN' && newSession) {
+                console.log("User signed in, redirecting to home");
+                router.replace('/');
+            }
+
+            setLoading(false);
         });
 
-        return () => subscription.unsubscribe();
+        return () => {
+            subscription.unsubscribe();
+        };
     }, [router]);
 
     return (

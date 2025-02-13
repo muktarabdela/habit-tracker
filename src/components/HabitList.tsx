@@ -8,7 +8,7 @@ interface HabitListProps {
 
 export default function HabitList({ habits, selectedHabitId, onHabitSelect }: HabitListProps) {
     return (
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-white rounded-xl shadow-sm p-6 overflow-y-auto max-h-96">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
                 <span className="mr-2">📋</span> Your Habits
             </h2>
@@ -35,9 +35,9 @@ export default function HabitList({ habits, selectedHabitId, onHabitSelect }: Ha
                                 }
                             `}
                         >
-                            <div className="flex items-center justify-between">
-                                <div className="flex-1">
-                                    <div className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
+                            <div className="flex items-center justify-between ">
+                                <div className="flex-1 ">
+                                    <div className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors ">
                                         {habit.name}
                                     </div>
                                     {habit.description && (

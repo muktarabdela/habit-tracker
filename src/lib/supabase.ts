@@ -34,3 +34,11 @@ export type HabitTrack = {
   created_at: string;
   updated_at: string;
 };
+export type HabitSuggestion = {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  identity_example: string;
+  created_at: string;
+};
