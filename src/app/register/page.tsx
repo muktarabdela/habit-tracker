@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { FiMail, FiLock, FiUser, FiArrowRight } from 'react-icons/fi';
+import { FiMail, FiLock, FiUser, FiArrowRight, FiEye, FiEyeOff } from 'react-icons/fi';
+import SuccessModal from '@/components/SuccessModal';
 
 export default function Register() {
     const [email, setEmail] = useState('');
@@ -13,6 +14,9 @@ export default function Register() {
     const [fullName, setFullName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const router = useRouter();
 
     const handleRegister = async (e: React.FormEvent) => {
@@ -39,8 +43,7 @@ export default function Register() {
 
             if (error) throw error;
 
-            alert('Registration successful! Please check your email to verify your account.');
-            router.push('/login');
+            setShowSuccessModal(true);
         } catch (error: unknown) {
             const e = error as Error;
             console.error('Error during registration:', e);
@@ -117,7 +120,7 @@ export default function Register() {
                         )}
 
                         <div className="space-y-4">
-                            <div>
+                            {/* <div>
                                 <label htmlFor="full-name" className="block text-sm font-medium text-gray-700 mb-1">
                                     Full Name
                                 </label>
@@ -136,7 +139,7 @@ export default function Register() {
                                         placeholder="Enter your full name"
                                     />
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
@@ -171,14 +174,21 @@ export default function Register() {
                                     <input
                                         id="password"
                                         name="password"
-                                        type="password"
+                                        type={showPassword ? 'text' : 'password'}
                                         autoComplete="new-password"
                                         required
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="appearance-none block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-700"
+                                        className="appearance-none block w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-700"
                                         placeholder="Create a password"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500"
+                                    >
+                                        {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                                    </button>
                                 </div>
                             </div>
 
@@ -193,14 +203,21 @@ export default function Register() {
                                     <input
                                         id="confirm-password"
                                         name="confirm-password"
-                                        type="password"
+                                        type={showConfirmPassword ? 'text' : 'password'}
                                         autoComplete="new-password"
                                         required
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className="appearance-none block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-700"
+                                        className="appearance-none block w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-700"
                                         placeholder="Confirm your password"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500"
+                                    >
+                                        {showConfirmPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -238,6 +255,19 @@ export default function Register() {
                     </form>
                 </div>
             </div>
+
+            {showSuccessModal && (
+                <SuccessModal
+                    isOpen={showSuccessModal}
+                    onClose={() => {
+                        setShowSuccessModal(false);
+                        router.push('/login');
+                    }}
+                    title="🎉 Registration Successful!"
+                    message="Please check your email to verify your account."
+                    type="habit-created"
+                />
+            )}
         </div>
     );
 } 
